@@ -1,0 +1,590 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:is(.dark *));
+
+/* iOS 26 Liquid Glass - Fluid translucent aesthetic */
+:root {
+  /* Light mode - Clean, airy, translucent */
+  --background: oklch(0.985 0.002 270);
+  --foreground: oklch(0.20 0.02 270);
+  --card: oklch(1 0 0 / 0.82);
+  --card-foreground: oklch(0.20 0.02 270);
+  --popover: oklch(1 0 0 / 0.92);
+  --popover-foreground: oklch(0.20 0.02 270);
+  --primary: oklch(0.60 0.15 260);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.01 270);
+  --secondary-foreground: oklch(0.40 0.02 270);
+  --muted: oklch(0.96 0.005 270);
+  --muted-foreground: oklch(0.55 0.02 270);
+  --accent: oklch(0.94 0.02 260);
+  --accent-foreground: oklch(0.25 0.02 270);
+  --destructive: oklch(0.60 0.20 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.005 270);
+  --input: oklch(0.92 0.005 270);
+  --ring: oklch(0.60 0.15 260);
+  --chart-1: oklch(0.65 0.15 260);
+  --chart-2: oklch(0.70 0.12 300);
+  --chart-3: oklch(0.65 0.14 180);
+  --chart-4: oklch(0.60 0.12 330);
+  --chart-5: oklch(0.55 0.10 30);
+  --radius: 1rem;
+  --sidebar: oklch(0.98 0.005 270 / 0.88);
+  --sidebar-foreground: oklch(0.20 0.02 270);
+  --sidebar-primary: oklch(0.60 0.15 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.94 0.02 260 / 0.6);
+  --sidebar-accent-foreground: oklch(0.25 0.02 270);
+  --sidebar-border: oklch(0.90 0.01 270 / 0.5);
+  --sidebar-ring: oklch(0.60 0.15 260);
+
+  /* Glass effect variables */
+  --glass-bg: oklch(1 0 0 / 0.75);
+  --glass-border: oklch(1 0 0 / 0.4);
+  --glass-shadow: oklch(0.60 0.15 260 / 0.08);
+
+  /* Project gradient (overridden per-project by ProjectThemeInjector) */
+  --gradient-from: oklch(0.60 0.15 260);
+  --gradient-to: oklch(0.65 0.18 300);
+
+  /* Sidebar width */
+  --sidebar-width: 220px;
+}
+
+/* Force sidebar offset to 0 on mobile — JS sets this too, but CSS ensures no flash */
+@media (max-width: 767px) {
+  :root {
+    --sidebar-width: 0px !important;
+  }
+}
+
+.dark {
+  /* Dark mode - Deep, luminous glass */
+  --background: oklch(0.12 0.015 270);
+  --foreground: oklch(0.95 0.01 270);
+  --card: oklch(0.18 0.02 270 / 0.75);
+  --card-foreground: oklch(0.95 0.01 270);
+  --popover: oklch(0.18 0.02 270 / 0.92);
+  --popover-foreground: oklch(0.95 0.01 270);
+  --primary: oklch(0.72 0.14 260);
+  --primary-foreground: oklch(0.12 0.015 270);
+  --secondary: oklch(0.22 0.02 270 / 0.75);
+  --secondary-foreground: oklch(0.85 0.01 270);
+  --muted: oklch(0.20 0.015 270 / 0.65);
+  --muted-foreground: oklch(0.65 0.02 270);
+  --accent: oklch(0.25 0.03 260 / 0.65);
+  --accent-foreground: oklch(0.95 0.01 270);
+  --destructive: oklch(0.55 0.20 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.30 0.02 270 / 0.5);
+  --input: oklch(0.30 0.02 270 / 0.5);
+  --ring: oklch(0.72 0.14 260);
+  --chart-1: oklch(0.72 0.14 260);
+  --chart-2: oklch(0.70 0.12 300);
+  --chart-3: oklch(0.68 0.14 180);
+  --chart-4: oklch(0.65 0.12 330);
+  --chart-5: oklch(0.60 0.10 30);
+  --sidebar: oklch(0.14 0.015 270 / 0.82);
+  --sidebar-foreground: oklch(0.95 0.01 270);
+  --sidebar-primary: oklch(0.72 0.14 260);
+  --sidebar-primary-foreground: oklch(0.12 0.015 270);
+  --sidebar-accent: oklch(0.28 0.03 260 / 0.5);
+  --sidebar-accent-foreground: oklch(0.95 0.01 270);
+  --sidebar-border: oklch(0.35 0.02 270 / 0.3);
+  --sidebar-ring: oklch(0.72 0.14 260);
+
+  /* Glass effect variables - dark */
+  --glass-bg: oklch(0.18 0.02 270 / 0.68);
+  --glass-border: oklch(0.40 0.02 270 / 0.3);
+  --glass-shadow: oklch(0 0 0 / 0.3);
+
+  /* Project gradient - dark defaults */
+  --gradient-from: oklch(0.72 0.14 260);
+  --gradient-to: oklch(0.70 0.12 300);
+}
+
+@theme inline {
+  /* System fonts - iOS style */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', monospace;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+
+  /* Color mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 16px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent iOS zoom on input focus */
+  @media (max-width: 767px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="number"],
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+
+  /* Touch targets — removed blanket min-size rule that inflated list rows.
+     Components handle their own touch sizing via padding/height classes. */
+
+  /* Safe area insets for notched devices */
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Custom scrollbar - subtle */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.70 0.02 270 / 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.60 0.02 270 / 0.5);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: oklch(0.40 0.02 270 / 0.4);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.50 0.02 270 / 0.5);
+  }
+}
+
+/* TipTap editor - ensure list styles survive Tailwind Preflight */
+.ProseMirror ul,
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+.ProseMirror ol,
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+.ProseMirror li,
+.prose li {
+  margin: 0.25em 0;
+}
+
+.ProseMirror li > ul,
+.ProseMirror li > ol {
+  margin: 0.25em 0;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid var(--primary, oklch(0.72 0.14 260));
+  padding-left: 1em;
+  margin: 1em 0;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5em 0;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* iOS Glass Utility Classes */
+@layer utilities {
+  /* Liquid glass effect */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-subtle {
+    background: oklch(1 0 0 / 0.55);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid oklch(1 0 0 / 0.3);
+  }
+
+  .dark .glass-subtle {
+    background: oklch(0.20 0.02 270 / 0.55);
+    border: 1px solid oklch(0.40 0.02 270 / 0.2);
+  }
+
+  .glass-strong {
+    background: oklch(1 0 0 / 0.85);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid oklch(1 0 0 / 0.5);
+    box-shadow:
+      0 8px 32px oklch(0.60 0.10 260 / 0.08),
+      inset 0 1px 0 oklch(1 0 0 / 0.5);
+  }
+
+  .dark .glass-strong {
+    background: oklch(0.20 0.02 270 / 0.78);
+    border: 1px solid oklch(0.45 0.02 270 / 0.3);
+    box-shadow:
+      0 8px 32px oklch(0 0 0 / 0.3),
+      inset 0 1px 0 oklch(1 0 0 / 0.05);
+  }
+
+  /* Fluid shadow */
+  .shadow-fluid {
+    box-shadow:
+      0 2px 8px oklch(0.60 0.10 260 / 0.06),
+      0 8px 24px oklch(0.60 0.10 260 / 0.08);
+  }
+
+  .dark .shadow-fluid {
+    box-shadow:
+      0 2px 8px oklch(0 0 0 / 0.2),
+      0 8px 24px oklch(0 0 0 / 0.3);
+  }
+
+  /* Luminous glow */
+  .glow {
+    box-shadow: 0 0 20px oklch(0.60 0.15 260 / 0.2);
+  }
+
+  .glow-sm {
+    box-shadow: 0 0 10px oklch(0.60 0.15 260 / 0.15);
+  }
+
+  /* Fluid hover lift */
+  .hover-float {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+  }
+
+  .hover-float:hover {
+    transform: translateY(-2px);
+  }
+
+  /* iOS-style inner highlight */
+  .inner-light {
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5);
+  }
+
+  .dark .inner-light {
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.08);
+  }
+
+  /* Vibrant text */
+  .text-vibrant {
+    background: linear-gradient(135deg, var(--primary), oklch(0.65 0.18 300));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Smooth animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Landing page specific animations */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Hero gradient text enhancement */
+.hero-gradient-text {
+  background: linear-gradient(
+    90deg,
+    oklch(0.75 0.20 330) 0%,
+    oklch(0.70 0.22 280) 25%,
+    oklch(0.72 0.20 230) 50%,
+    oklch(0.75 0.18 180) 75%,
+    oklch(0.75 0.20 330) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s linear infinite;
+}
+
+.dark .hero-gradient-text {
+  background: linear-gradient(
+    90deg,
+    oklch(0.80 0.22 330) 0%,
+    oklch(0.78 0.24 280) 25%,
+    oklch(0.80 0.22 230) 50%,
+    oklch(0.82 0.20 180) 75%,
+    oklch(0.80 0.22 330) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.dark .noise-overlay::before {
+  opacity: 0.05;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image:
+    linear-gradient(oklch(0.50 0 0 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.50 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(oklch(0.70 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.70 0 0 / 0.04) 1px, transparent 1px);
+}
+
+/* Mesh gradient background — uses project gradient colors via --gradient-from / --gradient-to */
+.mesh-gradient {
+  background:
+    radial-gradient(at 40% 20%, color-mix(in oklch, var(--gradient-from) 35%, white) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, color-mix(in oklch, var(--gradient-to) 28%, white) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, color-mix(in oklch, var(--gradient-from) 22%, white) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, color-mix(in oklch, var(--gradient-to) 18%, white) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, color-mix(in oklch, var(--gradient-from) 25%, white) 0px, transparent 50%);
+}
+
+.dark .mesh-gradient {
+  background:
+    radial-gradient(at 40% 20%, color-mix(in oklch, var(--gradient-from) 30%, black) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, color-mix(in oklch, var(--gradient-to) 24%, black) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, color-mix(in oklch, var(--gradient-from) 20%, black) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, color-mix(in oklch, var(--gradient-to) 16%, black) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, color-mix(in oklch, var(--gradient-from) 22%, black) 0px, transparent 50%);
+}
+
+/* Override mesh gradient with a custom background image when set by ProjectThemeInjector */
+:root.has-bg-image .mesh-gradient,
+:root.has-bg-image .dark .mesh-gradient,
+:root.has-bg-image.dark .mesh-gradient {
+  background: var(--bg-image-url) center / cover no-repeat fixed;
+}
