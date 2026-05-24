@@ -1,13 +1,13 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
-const COOKIE_DOMAIN = process.env.NODE_ENV === "production" ? ".kodeui.com" : undefined
-
 /**
- * Supabase server client for use in Server Components and Route Handlers.
+ * Supabase server client for Server Components and Route Handlers.
  *
- * Cookies are written with `domain=.kodeui.com` in production so the session
- * is shared with the main mediapipe SaaS at app.kodeui.com.
+ * Cookies are host-only (no custom `domain` attribute) — scoped to this
+ * Vercel deployment's own subdomain. We do NOT try to share cookies with
+ * the main SaaS (different vercel.app subdomain). Cross-app auth happens
+ * via the token-handoff flow at /auth/handoff instead — see middleware.ts.
  */
 export async function createClient() {
   const cookieStore = await cookies()
@@ -23,14 +23,11 @@ export async function createClient() {
         setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, {
-                ...options,
-                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
-              })
+              cookieStore.set(name, value, options)
             )
           } catch {
             // setAll throws in Server Components where cookies are read-only.
-            // Safe to ignore — middleware refreshes the session on the next request.
+            // Safe to ignore — middleware refreshes the session next request.
           }
         },
       },
