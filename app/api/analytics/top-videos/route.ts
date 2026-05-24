@@ -4,6 +4,10 @@ import { db } from "@/lib/db/client"
 import { videos } from "@/lib/db/schema"
 import { eq, and, gte, lte, desc, sql, type SQL, type Column } from "drizzle-orm"
 
+// Reads cookies / DB — always runtime, never prerender.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 /**
  * Top N videos for the user, filtered by publish date in the requested window.
  *

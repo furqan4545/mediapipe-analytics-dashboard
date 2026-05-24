@@ -4,6 +4,10 @@ import { db } from "@/lib/db/client"
 import { dailyMetrics } from "@/lib/db/schema"
 import { eq, and, gte, lte, asc } from "drizzle-orm"
 
+// Reads cookies / DB — always runtime, never prerender.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 /**
  * Daily interaction metrics for the requested window, gap-filled with zeros
  * so the chart renders a continuous series.

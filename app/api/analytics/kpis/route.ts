@@ -4,6 +4,10 @@ import { db } from "@/lib/db/client"
 import { kpiSnapshots, dailyMetrics, videos, accounts } from "@/lib/db/schema"
 import { eq, and, gte, lte, sql, count } from "drizzle-orm"
 
+// Reads cookies / DB — always runtime, never prerender.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 /**
  * Returns period-over-period KPIs for the authenticated user.
  *

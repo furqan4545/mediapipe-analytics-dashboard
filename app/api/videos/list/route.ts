@@ -4,6 +4,10 @@ import { db } from "@/lib/db/client"
 import { videos } from "@/lib/db/schema"
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, type SQL, type Column } from "drizzle-orm"
 
+// Reads cookies / DB — always runtime, never prerender.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 const VALID_SORT_COLS = [
   "viewCount",
   "likeCount",

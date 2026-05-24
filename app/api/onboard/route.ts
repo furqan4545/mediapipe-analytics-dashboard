@@ -2,6 +2,10 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { triggerOnboard } from "@/lib/worker-client"
 
+// Reads cookies / DB — always runtime, never prerender.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 /**
  * Proxies POST /onboard/:userId to the analytics worker.
  *

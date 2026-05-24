@@ -9,6 +9,11 @@ import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import { OnboardKick } from "./onboard-kick"
 
+// This layout reads the auth cookie + queries Postgres. Both are runtime
+// concerns — never let Next try to prerender us at build time on Vercel.
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 const MAIN_SAAS_URL = process.env.NEXT_PUBLIC_MAIN_SAAS_URL || "https://app.kodeui.com"
 
 /**
