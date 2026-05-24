@@ -221,15 +221,21 @@ export const syncJobs = pgTable(
   })
 )
 
-// ─── SaaS-owned linked_accounts (read-only view for onboarding gate) ──────
-// We only declare the columns the dashboard reads. The actual table is owned
-// by the mediapipe SaaS and may have additional columns.
-export const linkedAccounts = pgTable("linked_accounts", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id").notNull(),
-  oneupUsername: text("oneup_username"),
-  oneupSocialType: text("oneup_social_type"),
+// ─── External read-only view: admin-owned `accounts` table ───────────────
+// Owned by mediapipe-admin (canonical inventory). We mirror just the columns
+// the dashboard needs to compute the connection banner:
+//   - total active = released_at IS NULL
+//   - live count   = warming_status = 'warmed' (analytics fetchable)
+// linked_accounts is intentionally NOT declared here — admin is the source
+// of truth for ownership; linked_accounts is being retired in the SaaS.
+export const adminAccounts = pgTable("accounts", {
+  id: uuid("id").primaryKey(),
+  username: text("username").notNull(),
+  platform: text("platform").notNull(),
+  assignedToUser: text("assigned_to_user"),
   releasedAt: timestamp("released_at", { withTimezone: true }),
+  warmingStatus: text("warming_status").notNull(),
+  lifecycleStatus: text("lifecycle_status").notNull(),
 })
 
 export type Account = typeof accounts.$inferSelect
@@ -237,4 +243,4 @@ export type Video = typeof videos.$inferSelect
 export type DailyMetric = typeof dailyMetrics.$inferSelect
 export type KpiSnapshot = typeof kpiSnapshots.$inferSelect
 export type SyncJob = typeof syncJobs.$inferSelect
-export type LinkedAccount = typeof linkedAccounts.$inferSelect
+export type AdminAccount = typeof adminAccounts.$inferSelect
