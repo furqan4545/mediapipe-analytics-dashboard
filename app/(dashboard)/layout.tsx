@@ -14,7 +14,7 @@ import { OnboardKick } from "./onboard-kick"
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
-const MAIN_SAAS_URL = process.env.NEXT_PUBLIC_MAIN_SAAS_URL || "https://media-pipe-jenni.vercel.app"
+const MAIN_SAAS_URL = process.env.NEXT_PUBLIC_MAIN_SAAS_URL || "https://hardlaunch.com"
 
 /**
  * Dashboard route group layout.
