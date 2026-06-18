@@ -38,6 +38,14 @@ export function StatsSection({ period = "30d", platform = "all", dateFrom, dateT
   const { data, loading, error, isRefreshing } = useKPIs({ period, platform, dateFrom, dateTo })
   const isAutomations = false
 
+  // The account count is platform-scoped. We only track Instagram + TikTok, so
+  // name the platform directly; "all" sums both live counts and matches the
+  // "X of Y accounts are live" banner above.
+  const accountLabel =
+    platform === "instagram" ? "Instagram Accounts" :
+    platform === "tiktok"    ? "TikTok Accounts"    :
+                               "Live Accounts"
+
   if (loading) {
     return (
       <section className="grid gap-3 sm:gap-5 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
@@ -71,7 +79,7 @@ export function StatsSection({ period = "30d", platform = "all", dateFrom, dateT
           delay={0}
         />
         <StatCard
-          title="Active Accounts"
+          title={accountLabel}
           value="—"
           icon={Users}
           delay={50}
@@ -99,7 +107,6 @@ export function StatsSection({ period = "30d", platform = "all", dateFrom, dateT
   }
 
   const videoChange = formatChangeValue(data.videoCount, data.prevVideoCount)
-  const accountChange = formatChangeValue(data.accountCount, data.prevAccountCount)
   const viewChange = formatChangeValue(data.viewCount, data.prevViewCount)
   const likeChange = formatChangeValue(data.likeCount, data.prevLikeCount)
   const commentChange = formatChangeValue(data.commentCount, data.prevCommentCount)
@@ -146,10 +153,8 @@ export function StatsSection({ period = "30d", platform = "all", dateFrom, dateT
           delay={0}
         />
         <StatCard
-          title={isAutomations ? "Automation Accounts" : "Active Accounts"}
+          title={accountLabel}
           value={formatNumber(data.accountCount)}
-          change={accountChange.value}
-          changeType={accountChange.type}
           icon={Users}
           delay={50}
         />
