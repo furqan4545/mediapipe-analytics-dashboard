@@ -12,6 +12,7 @@
 
 import {
   pgTable,
+  pgSchema,
   uuid,
   text,
   integer,
@@ -237,6 +238,20 @@ export const adminAccounts = pgTable("accounts", {
   warmingStatus: text("warming_status").notNull(),
   lifecycleStatus: text("lifecycle_status").notNull(),
 })
+
+// ─── External read-only view: Supabase auth users ────────────────────────
+// The pooler role we connect as can read the `auth` schema. We mirror just
+// the columns the super-admin customer list needs (email + signup date) so we
+// can label each customer's analytics by who they are. Read-only — auth is
+// owned by Supabase / the main SaaS.
+const authSchema = pgSchema("auth")
+export const authUsers = authSchema.table("users", {
+  id: uuid("id").primaryKey(),
+  email: text("email"),
+  createdAt: timestamp("created_at", { withTimezone: true }),
+})
+
+export type AuthUser = typeof authUsers.$inferSelect
 
 export type Account = typeof accounts.$inferSelect
 export type Video = typeof videos.$inferSelect

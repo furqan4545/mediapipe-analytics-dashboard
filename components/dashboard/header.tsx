@@ -75,6 +75,11 @@ const pageConfig: Record<string, {
     subtitle: "Performance leaderboard",
     filters: dashboardFilters,
   },
+  "/admin": {
+    title: "Super Admin",
+    subtitle: "All customers overview",
+    filters: [],
+  },
 }
 
 const periodPresets = [

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { getEffectiveContext } from "@/lib/super-admin"
 import { db } from "@/lib/db/client"
 import { accounts, videos } from "@/lib/db/schema"
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, type SQL, type Column } from "drizzle-orm"
@@ -27,12 +27,11 @@ type SortCol = typeof VALID_SORT_COLS[number]
  * can show "views this period" alongside lifetime totals.
  */
 export async function GET(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const ctx = await getEffectiveContext()
+  if (!ctx) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
-  const userId = user.id
+  const userId = ctx.effectiveUserId
 
   const { searchParams } = new URL(request.url)
   const dateFromRaw = searchParams.get("dateFrom") || getDefaultDateFrom()

@@ -59,7 +59,8 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/accounts") ||
     pathname.startsWith("/videos") ||
-    pathname.startsWith("/creators")
+    pathname.startsWith("/creators") ||
+    pathname.startsWith("/admin")
 
   if (isProtectedPage && !user) {
     // Send the user to the main SaaS, asking it to bounce them back here

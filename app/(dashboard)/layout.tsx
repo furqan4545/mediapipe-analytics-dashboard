@@ -1,12 +1,13 @@
 import React from "react"
 import Link from "next/link"
 import { AlertCircle, Clock } from "lucide-react"
-import { createClient } from "@/lib/supabase/server"
 import { db } from "@/lib/db/client"
-import { adminAccounts } from "@/lib/db/schema"
+import { adminAccounts, authUsers } from "@/lib/db/schema"
 import { and, eq, isNull, sql } from "drizzle-orm"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
+import { ImpersonationBanner } from "@/components/admin/impersonation-banner"
+import { getEffectiveContext } from "@/lib/super-admin"
 import { OnboardKick } from "./onboard-kick"
 
 // This layout reads the auth cookie + queries Postgres. Both are runtime
@@ -34,14 +35,16 @@ const MAIN_SAAS_URL = process.env.NEXT_PUBLIC_MAIN_SAAS_URL || "https://hardlaun
 export default async function DashboardLayout({
   children,
 }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const ctx = await getEffectiveContext()
+  if (!ctx) {
     // Defensive — middleware already redirects unauthenticated requests.
     return null
   }
+  const { user, effectiveUserId, superAdmin, impersonating } = ctx
 
-  // Single query: counts both active and warmed in one round trip.
+  // Single query: counts both active and warmed in one round trip. Scoped to
+  // the *effective* user, so a super admin viewing a customer sees that
+  // customer's connection state.
   const counts = await db
     .select({
       active: sql<number>`count(*)::int`,
@@ -49,7 +52,7 @@ export default async function DashboardLayout({
     })
     .from(adminAccounts)
     .where(and(
-      eq(adminAccounts.assignedToUser, user.id),
+      eq(adminAccounts.assignedToUser, effectiveUserId),
       isNull(adminAccounts.releasedAt),
     ))
     .then(r => r[0] ?? { active: 0, warmed: 0 })
@@ -58,9 +61,25 @@ export default async function DashboardLayout({
       return { active: -1, warmed: -1 }
     })
 
+  // Resolve the impersonated customer's email for the admin banner.
+  let viewingEmail: string | null = null
+  if (impersonating) {
+    viewingEmail = await db
+      .select({ email: authUsers.email })
+      .from(authUsers)
+      .where(eq(authUsers.id, effectiveUserId))
+      .then(r => r[0]?.email ?? null)
+      .catch(() => null)
+  }
+
   console.log(
-    `[Dashboard layout] userId=${user.id} email=${user.email} active=${counts.active} warmed=${counts.warmed}`
+    `[Dashboard layout] userId=${user.id} effective=${effectiveUserId} impersonating=${impersonating} active=${counts.active} warmed=${counts.warmed}`
   )
+
+  // The "connect accounts" banner is for customers. Don't nag a super admin
+  // about their own (empty) inventory — only show it for normal users, or for
+  // the customer a super admin is currently viewing.
+  const showAccountBanner = !superAdmin || impersonating
 
   return (
     <div className="min-h-screen mesh-gradient">
@@ -69,7 +88,10 @@ export default async function DashboardLayout({
       <div className="transition-all duration-300" style={{ marginLeft: "var(--sidebar-width, 220px)" }}>
         <Header />
         <main className="p-4 sm:p-8 pb-24 md:pb-8 space-y-4 sm:space-y-6">
-          <Banner active={counts.active} warmed={counts.warmed} />
+          {impersonating && (
+            <ImpersonationBanner email={viewingEmail} userId={effectiveUserId} />
+          )}
+          {showAccountBanner && <Banner active={counts.active} warmed={counts.warmed} />}
           {children}
         </main>
         <OnboardKick />

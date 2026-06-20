@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   Users,
   Video,
+  Shield,
   ChevronLeft,
   Sun,
   Moon,
@@ -55,6 +56,7 @@ export function Sidebar() {
   const [mounted, setMounted] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
@@ -74,6 +76,12 @@ export function Sidebar() {
         )
       }
     })
+
+    // Server decides who's a super admin (allowlist) — the link is just chrome.
+    fetch("/api/admin/me")
+      .then((r) => r.json())
+      .then((d) => setIsSuperAdmin(!!d?.isSuperAdmin))
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -166,7 +174,10 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className={cn("flex-1 py-2", collapsed && !mobileOpen ? "" : "px-3")}>
         <div className="space-y-1">
-          {navItems.map((item) => {
+          {(isSuperAdmin
+            ? [...navItems, { label: "Admin", icon: Shield, href: "/admin" }]
+            : navItems
+          ).map((item) => {
             const isActive = pathname === item.href
             return (
               <div key={item.label} className={cn(collapsed && !mobileOpen && "flex justify-center")}>
